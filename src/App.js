@@ -1,19 +1,20 @@
-import React from 'react';
 import './App.css';
 import './reset.css';
-import { Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './component/home/Home';
-import SearchUrl from './component/searchUrl/SearchUrl';
 import SearchKeyword from './component/searchKeyword/SearchKeyword';
-import Item from './component/common/Item';
+import SearchUrl from './component/searchUrl/SearchUrl';
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="searchKeyword/:keyword" element={<SearchKeyword />} />
-      <Route path="searchUrl/:url" element={<SearchUrl />} />
-    </Routes>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/search/:name" element={<SearchKeyword />} />
+        <Route path="/search/:image_url" element={<SearchUrl />} />
+        <Route path="/search/:product_code" element={<SearchUrl />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
