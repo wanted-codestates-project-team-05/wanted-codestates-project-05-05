@@ -5,6 +5,7 @@ import { products } from '../../Data/products';
 const Search = () => {
   const [query, setQuery] = useLocalStorage('query', '');
   const [result, setResult] = useLocalStorage('result', '');
+<<<<<<< HEAD
   const inputRef = useRef('');
   const handleInputValue = (ref) => {
     const value = ref.current.value;
@@ -48,6 +49,17 @@ const Search = () => {
           {/*데이터 조회해서 사용하기*/}
         </form>
       </div>
+=======
+
+  return (
+    <div>
+      <input type="text" />
+      {/*데이터 삽입하기*/}
+      <button onClick={() => setResult('원피스')}>검색</button>
+      {/*데이터 조회해서 사용하기*/}
+      <p>{result}</p>
+    </div>
+>>>>>>> 05e9240 (Refactor: 사용법 주석추가)
   );
 };
 
