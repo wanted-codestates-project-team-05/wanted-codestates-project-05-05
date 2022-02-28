@@ -40,14 +40,14 @@ const Search = () => {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSearch}>
-        <input type="text" ref={inputRef} />
-        {/*데이터 삽입하기*/}
-        <button type="submit">검색</button>
-        {/*데이터 조회해서 사용하기*/}
-      </form>
-    </div>
+      <div>
+        <form onSubmit={handleSearch}>
+          <input type="text" ref={inputRef} />
+          {/*데이터 삽입하기*/}
+          <button type="submit">검색</button>
+          {/*데이터 조회해서 사용하기*/}
+        </form>
+      </div>
   );
 };
 
