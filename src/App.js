@@ -5,6 +5,7 @@ import { Routes, Route } from 'react-router-dom';
 import Home from './component/home/Home';
 import SearchUrl from './component/searchUrl/SearchUrl';
 import SearchKeyword from './component/searchKeyword/SearchKeyword';
+import Item from './component/common/Item';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="searchKeyword" element={<SearchKeyword />} />
       <Route path="searchUrl" element={<SearchUrl />} />
+      <Route path="searchitem" element={<Item />} />
     </Routes>
   );
 }
