@@ -7,12 +7,12 @@ export default function TextHighlight({ text, keyword }) {
     return (
       <>
         {sentence.map((item, index) =>
-          item.toLowerCase() === keyword.toLowerCase() ? <Highlight key={index}>{item}</Highlight> : item
+          item.toLowerCase() === keyword.toLowerCase() ? <Highlight key={index}>{item}</Highlight> : <span>{item}</span>
         )}
       </>
     );
   }
-  return <p>{text}</p>;
+  return <span>{text}</span>;
 }
 
 const Highlight = styled.span`
