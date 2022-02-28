@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import useLocalStorage from '../../hooks/useLocalStorage';
 
-const Search = (props) => {
+const Search = () => {
   const [result, setResult] = useLocalStorage('result', '');
   const handleSearch = (text) => {
     setResult(text);
