@@ -2,6 +2,9 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import QueryString from 'qs';
+import Header from '../common/Header';
+import { SearchList } from '../searchKeyword/SearchList';
+import TextHighlight from '../common/TextHighlight';
 
 const url = 'https://static.pxl.ai/problem/data/products.json';
 
@@ -20,7 +23,7 @@ const SearchKeyword = (props) => {
     setIsLoading(true);
     getData(url)
       .then((res) => {
-        setData(res.data.filter((item) => item.name.includes(queryData.searchkey)));
+        setData(res.data);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -30,18 +33,20 @@ const SearchKeyword = (props) => {
       });
   }, [navigate, queryData.searchkey]);
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
+  // useEffect(() => {
+  //   console.log(data);
+	// 	console.log(queryData.searchKey)
+  // }, [data]);
 
-  useEffect(() => {
-    console.log(isLoading);
-  }, [isLoading]);
+  // useEffect(() => {
+  //   console.log(isLoading);
+  // }, [isLoading]);
 
   if (isLoading) return <div>Loading</div>;
   return (
     <>
-      {data.map((item) => (
+		<Header/>
+      {/* {data.map((item) => (
         <div>
           <span>{item.name} </span>
           <a href={item.image_url} target={'_blank'} rel={'noreferrer'}>
@@ -49,8 +54,8 @@ const SearchKeyword = (props) => {
           </a>
           <span>{item.price}원 </span>
         </div>
-      ))}
-      ;
+      ))} */}
+			<SearchList searchKeyword={queryData.searchKey} dataList={data}/>
     </>
   );
 };

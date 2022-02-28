@@ -18,8 +18,9 @@ export const MoreButton = (props) => {
 }
 
 const Container = styled.div`
-	width: 150px;
-	height: 50px;
+	width: 9.375rem;
+	height: 3.125rem;
+	margin: 0 auto;
 	background-color: lightblue;
 	border-radius: 5px;
 	display: flex;
