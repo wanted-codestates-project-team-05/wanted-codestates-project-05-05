@@ -1,48 +1,29 @@
 import styled from 'styled-components';
 import QueryString from 'qs';
 import { useLocation } from 'react-router';
-
-const HighlightedText = ({ text, HighlightedText }) => {
-  
-    const parts = text.split(new RegExp(`(${HighlightedText})`, 'gi'));
-    return (
-      <>
-        {parts.map((part, index) =>
-          part.toLowerCase() === HighlightedText.toLowerCase() ? (
-            <span key={index} className="highlight-txt">
-              {part}
-            </span>
-          ) : (
-            part
-          )
-        )}
-      </>
-    );
-  }
-
+import TextHighlight from './TextHighlight'
 
 const Item = ( props ) => {
-  const { imageUrl, name, price } = props;
-  const tedssd = 'asdsda';
+  const { image_url, name, price } = props;
   const location = useLocation();
   const queryData = QueryString.parse(location.search, { ignoreQueryPrefix: true });
   const keyWord = queryData.key;
 
   
   const onClickItem = () => { 
-    window.open(`${imageUrl}`, '_blank');
+    window.open(`${image_url}`, '_blank');
   }
 
   //console.log(keyWord);
   return (
     <Container onClick={onClickItem}>
-      {/* <img src={imageUrl} alt={name + '이미지'} className="prod-img" />
-      <div className="prod-txt"> */}
-      <p className="prod-tit">
-        <HighlightedText text={tedssd} HighlightedText={keyWord} />
-      </p>
-      {/* <p className="prod-price">₩{price.toLocaleString()}</p>
-      </div> */}
+      <img src={image_url} alt={name + '이미지'} className="prod-img" />
+      <div className="prod-txt">
+        <p className="prod-tit">
+          <TextHighlight text={name} keyword={keyWord} />
+        </p>
+        <p className="prod-price">₩{price.toLocaleString()}</p>
+      </div>
     </Container>
   );
 };
