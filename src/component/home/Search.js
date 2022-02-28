@@ -3,14 +3,13 @@ import useLocalStorage from '../../hooks/useLocalStorage';
 
 const Search = () => {
   const [result, setResult] = useLocalStorage('result', '');
-  const handleSearch = (text) => {
-    setResult(text);
-  };
 
   return (
     <div>
       <input type="text" />
-      <button onClick={() => handleSearch('원피스')}>검색</button>
+      {/*데이터 삽입하기*/}
+      <button onClick={() => setResult('원피스')}>검색</button>
+      {/*데이터 조회해서 사용하기*/}
       <p>{result}</p>
     </div>
   );
