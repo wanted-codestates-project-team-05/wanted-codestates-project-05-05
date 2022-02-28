@@ -56,6 +56,9 @@ const Container = styled.div`
 	box-sizing: border-box;
 	padding-left: 5px;
 
+	@media (max-width: 1420px){
+		width: calc(9.375rem * 8 + 8 * 0.625rem);
+	}
 	@media (max-width: 1280px){
 		width: calc(9.375rem * 7 + 7 * 0.625rem);
 	}
