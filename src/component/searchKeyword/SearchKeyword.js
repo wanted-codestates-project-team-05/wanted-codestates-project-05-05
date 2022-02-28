@@ -3,20 +3,22 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import QueryString from 'qs';
 
+const url = 'https://static.pxl.ai/problem/data/products.json';
+
 const SearchKeyword = (props) => {
   const navigate = useNavigate();
   const location = useLocation();
   const queryData = QueryString.parse(location.search, { ignoreQueryPrefix: true });
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
-  const getData = async () => {
-    const response = await axios.get('https://static.pxl.ai/problem/data/products.json');
+  const getData = async (url) => {
+    const response = await axios.get(url);
     return response;
   };
 
   useEffect(() => {
     setIsLoading(true);
-    getData()
+    getData(url)
       .then((res) => {
         setData(res.data.filter((item) => item.name.includes(queryData.searchkey)));
         setIsLoading(false);
