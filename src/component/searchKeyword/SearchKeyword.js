@@ -6,6 +6,8 @@ import { SearchList } from '../searchKeyword/SearchList';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import Loading from '../common/Loading';
 import QueryString from 'qs';
+import Header from '../common/Header';
+import { SearchList } from '../searchKeyword/SearchList';
 
 const url = 'https://static.pxl.ai/problem/data/products.json';
 

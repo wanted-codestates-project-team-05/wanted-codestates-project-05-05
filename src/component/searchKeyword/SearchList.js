@@ -39,17 +39,18 @@ export const SearchList = (props) => {
   );
 };
 
-const Container = styled.div`
-  width: calc(10.75rem * 8 + 8 * 0.625rem);
-  height: auto;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 0 auto;
-  box-sizing: border-box;
-  padding-left: 5px;
 
-  @media (max-width: 1456px) {
+const Container = styled.div`
+	width: calc(10.75rem * 8 + 8 * 0.625rem);
+	height: auto;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin: 0 auto;
+	box-sizing: border-box;
+	padding-left: 5px;
+
+	@media (max-width: 1456px) {
     width: calc(10.75rem * 7 + 7 * 0.625rem);
   }
   @media (max-width: 1274px) {
@@ -70,12 +71,12 @@ const Container = styled.div`
   @media (max-width: 500px) {
     width: calc(10.75rem * 1 + 1 * 0.625rem);
   }
-`;
+`
 
 const ButtonWrapper = styled.div`
-  width: 100%;
-  height: 6.25rem;
-  margin: 10px auto;
-  display: flex;
-  align-items: center;
-`;
+	width: 100%;
+	height: 6.25rem;
+	margin: 10px auto;
+	display: flex;
+	align-items: center;
+`
