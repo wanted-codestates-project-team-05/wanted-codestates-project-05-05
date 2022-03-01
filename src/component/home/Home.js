@@ -26,7 +26,7 @@ const Home = () => {
       case 'productCode':
         setResult(products.filter((product) => product.product_code === Number(value)));
         break;
-      case 'imageURrl':
+      case 'imageUrl':
         setResult(products.filter((product) => product.image_url === value));
         break;
       case 'keyword':
@@ -40,10 +40,10 @@ const Home = () => {
     const productCodeCheck = /^[0-9]*$/;
     const imageUrlCheck = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?(.*?)\.(jpg|jpeg|png|gif|bmp|pdf)$/;
     if (productCodeCheck.test(value)) {
-      await filterResult('imageURrl', value);
+      await filterResult('productCode', value);
       await navigate(`searchUrl/:${value}`);
     } else if (imageUrlCheck.test(value)) {
-      await filterResult('productCode', value);
+      await filterResult('imgUrl', value);
       value = value.replace(/\/|:/g, '_');
       await navigate(`searchUrl/:${value}`);
     } else {
