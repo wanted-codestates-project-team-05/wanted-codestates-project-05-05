@@ -1,28 +1,52 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../common/Header';
 import Loading from '../common/Loading';
+import useLocalStorage from '../../hooks/useLocalStorage';
+import { products } from '../../Data/products';
 
 const Home = () => {
-  const [search, setSearch] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
-  // input onchange
-  const searchHandler = (e) => {
-    const { value } = e.target;
-    setSearch(value);
-  };
-  // input enter event
-  const enterHandler = (e) => {
-    if (e.key === 'Enter') {
-      console.log(`Enter ${search}`);
-      setSearch('');
+  const [query, setQuery] = useLocalStorage('query', '');
+  const [result, setResult] = useLocalStorage('result', '');
+  const handleError = () => {
+    if (result.length === 0) {
+      console.log('검색결과가 없습니다. ');
     }
   };
-  // button click event
-  const btnOnclick = (e) => {
-    console.log(`onClick ${search}`);
-    setSearch('');
+  const matchingSearchType = async (value) => {
+    const productCodeCheck = /^[0-9]*$/;
+    const imageUrlCheck = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?(.*?)\.(jpg|jpeg|png|gif|bmp|pdf)$/;
+    if (productCodeCheck.test(value)) {
+      const productCodeResult = products.filter((product) => product.product_code === Number(value));
+      await setResult(productCodeResult);
+      await navigate(`searchUrl/:${value}`);
+    } else if (imageUrlCheck.test(value)) {
+      const imageUrlResult = products.filter((product) => product.image_url === value);
+      await setResult(imageUrlResult);
+      value = value.replace(/\/|:/g, '_');
+      await navigate(`searchUrl/:${value}`);
+    } else {
+      const keywordResult = products.filter((product) => product.name.includes(value));
+      await setResult(keywordResult);
+      await navigate(`searchKeyword/:${value}`);
+      handleError(result);
+    }
   };
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setQuery(inputValue);
+    matchingSearchType(inputValue);
+    setInputValue('');
+  };
+  const navigate = useNavigate();
+  const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const handleChangeInput = (e) => {
+    const { value } = e.target;
+    setInputValue(value);
+  };
+
   return (
     <Wrapper>
       <Header />
@@ -31,22 +55,17 @@ const Home = () => {
       ) : (
         <Main>
           <Sign>
-            <span>Artificial Intelligence</span>
+            <h1>Artificial Intelligence</h1>
             <h1>
               PXL
               <span> Fashion </span>
               Viewer
             </h1>
           </Sign>
-          <Search>
-            <SearchBar
-              type="text"
-              placeholder="IMAGE URL or KEYWORD"
-              onChange={searchHandler}
-              onKeyPress={(e) => enterHandler(e)}
-            />
-            <Btn onClick={btnOnclick}>검색</Btn>
-          </Search>
+          <Form onSubmit={handleSearch}>
+            <Input type="text" placeholder="IMAGE URL or KEYWORD" onChange={handleChangeInput} value={inputValue} />
+            <Btn type="submit">검색</Btn>
+          </Form>
         </Main>
       )}
     </Wrapper>
@@ -59,7 +78,6 @@ const Wrapper = styled.div`
   align-items: center;
   flex-direction: column;
 `;
-
 const Main = styled.div`
   display: flex;
   justify-content: center;
@@ -72,10 +90,11 @@ const Sign = styled.div`
   height: 30vh;
   font-size: 3rem;
   color: #4b4b4b;
-  & > span {
+  & > :nth-child(1) {
     font-weight: bold;
+    color: #4b4b4b;
   }
-  & > h1 {
+  & > :nth-child(2) {
     color: #878787;
     > span {
       font-weight: bold;
@@ -83,11 +102,11 @@ const Sign = styled.div`
     }
   }
 `;
-const Search = styled.div`
+const Form = styled.form`
   display: flex;
   justify-content: center;
 `;
-const SearchBar = styled.input`
+const Input = styled.input`
   width: 35rem;
   line-height: 2.7rem;
   font-size: 1rem;

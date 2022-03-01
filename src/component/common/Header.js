@@ -4,12 +4,11 @@ import logo from '../img/logo_pxl.png';
 import { useNavigate } from 'react-router-dom';
 const Header = () => {
   const navigate = useNavigate();
+  const goHome = () => {
+    navigate('/');
+  };
   return (
-    <Container
-      onClick={() => {
-        navigate('/');
-      }}
-    >
+    <Container onClick={goHome}>
       <Logo src={logo} alt="" />
     </Container>
   );
