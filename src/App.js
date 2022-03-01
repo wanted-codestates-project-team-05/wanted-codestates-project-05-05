@@ -11,9 +11,8 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="searchKeyword" element={<SearchKeyword />} />
-      <Route path="searchUrl" element={<SearchUrl />} />
-      <Route path="searchitem" element={<Item />} />
+      <Route path="searchKeyword/:keyword" element={<SearchKeyword />} />
+      <Route path="searchUrl/:url" element={<SearchUrl />} />
     </Routes>
   );
 }
