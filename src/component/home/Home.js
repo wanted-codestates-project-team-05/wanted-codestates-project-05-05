@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../common/Header';
 import Loading from '../common/Loading';
@@ -13,6 +13,7 @@ const Home = () => {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+
   const navigate = useNavigate();
   const handleChangeInput = (e) => {
     const { value } = e.target;
@@ -40,18 +41,18 @@ const Home = () => {
     console.log('검색결과 없음');
     setIsError(true);
   };
-  const goSearchUrl = (result, value) => {
+  const goSearchUrl = (result, value, type) => {
     if (result.length === 0) {
       handleError();
     } else {
-      navigate(`searchUrl/:${value}`);
+      navigate(`searchUrl?${type}=${value}`);
     }
   };
   const goSearchKeyword = (result, value) => {
     if (result.length === 0) {
       handleError();
     } else {
-      navigate(`searchKeyword/:${value}`);
+      navigate(`searchKeyword?keyword=${value}`);
     }
   };
   const matchingSearchType = async (value) => {
@@ -59,11 +60,10 @@ const Home = () => {
     const imageUrlCheck = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?(.*?)\.(jpg|jpeg|png|gif|bmp|pdf)$/;
     if (productCodeCheck.test(value)) {
       const result = filterResult('productCode', value);
-      goSearchUrl(result, value);
+      goSearchUrl(result, value, 'productCode');
     } else if (imageUrlCheck.test(value)) {
       const result = filterResult('imageUrl', value);
-      value = value.replace(/\/|:/g, '_');
-      goSearchUrl(result, value);
+      goSearchUrl(result, value, 'imageUrl');
     } else {
       const result = filterResult('keyword', value);
       goSearchKeyword(result, value);
