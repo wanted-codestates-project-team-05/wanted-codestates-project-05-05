@@ -28,9 +28,12 @@ export const SearchList = (props) => {
 				dataList.filter((item, index) => item.name.includes(searchKeyword))
 				.filter((item, index) => index <= cardNum)
 				.map((product) => (
-					<Card key={product.product_code}>
-						<TextHighlight text={product.name} keyword={searchKeyword}/>
-					</Card>
+					<Item 
+						key={product.product_code} 
+						name={product.name} 
+						image_url={product.image_url} 
+						price={product.price}>
+					</Item>
 				))
 			}
 		</Container>
@@ -47,7 +50,7 @@ export const SearchList = (props) => {
 }
 
 const Container = styled.div`
-	width: calc(9.375rem * 9 + 9 * 0.625rem);
+	width: calc(10.75rem * 8 + 8 * 0.625rem);
 	height: auto;
 	display: flex;
 	flex-wrap: wrap;
@@ -56,29 +59,26 @@ const Container = styled.div`
 	box-sizing: border-box;
 	padding-left: 5px;
 
-	@media (max-width: 1420px){
-		width: calc(9.375rem * 8 + 8 * 0.625rem);
+	@media (max-width: 1456px){
+		width: calc(10.75rem * 7 + 7 * 0.625rem);
 	}
-	@media (max-width: 1280px){
-		width: calc(9.375rem * 7 + 7 * 0.625rem);
+	@media (max-width: 1274px){
+		width: calc(10.75rem * 6 + 6 * 0.625rem);
 	}
-	@media (max-width: 1120px){
-		width: calc(9.375rem * 6 + 6 * 0.625rem);
+	@media (max-width: 1140px){
+		width: calc(10.75rem * 5 + 5 * 0.625rem);
 	}
-	@media (max-width: 960px){
-		width: calc(9.375rem * 5 + 5 * 0.625rem);
+	@media (max-width: 980px){
+		width: calc(10.75rem * 4 + 4 * 0.625rem);
 	}
-	@media (max-width: 800px){
-		width: calc(9.375rem * 4 + 4 * 0.625rem);
+	@media (max-width: 820px){
+		width: calc(10.75rem * 3 + 3 * 0.625rem);
 	}
-	@media (max-width: 640px){
-		width: calc(9.375rem * 3 + 3 * 0.625rem);
+	@media (max-width: 660px){
+		width: calc(10.75rem * 2 + 2 * 0.625rem);
 	}
-	@media (max-width: 480px){
-		width: calc(9.375rem * 2 + 2 * 0.625rem);
-	}
-	@media (max-width: 320px){
-		width: calc(9.375rem * 1 + 1 * 0.625rem);
+	@media (max-width: 500px){
+		width: calc(10.75rem * 1 + 1 * 0.625rem);
 	}
 `
 
@@ -88,10 +88,4 @@ const ButtonWrapper = styled.div`
 	margin: 10px auto;
 	display: flex;
 	align-items: center;
-`
-
-const Card = styled.div`
-	width: 150px;
-	height: 200px;
-	background-color: aliceblue;
 `
