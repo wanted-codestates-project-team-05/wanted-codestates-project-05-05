@@ -7,7 +7,7 @@ const Item = ( props ) => {
   const { image_url, name, price } = props;
   const location = useLocation();
   const queryData = QueryString.parse(location.search, { ignoreQueryPrefix: true });
-  const keyWord = queryData.key;
+  const keyWord = queryData.keyword;
 
   
   const onClickItem = () => { 
