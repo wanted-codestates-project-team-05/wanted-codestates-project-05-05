@@ -5,6 +5,7 @@ import Header from '../common/Header';
 import Loading from '../common/Loading';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import { products } from '../../Data/products';
+import { regions } from '../../Data/regions';
 
 const Home = () => {
   const [query, setQuery] = useLocalStorage('query', '');
@@ -20,11 +21,11 @@ const Home = () => {
   const filterResult = (type, value) => {
     let result = [];
     if (type === 'productCode') {
-      result = products.filter((product) => product.product_code === Number(value));
+      result = regions.filter((product) => product.product_code === Number(value));
       setResult(result);
       return result;
     } else if (type === 'imageUrl') {
-      result = products.filter((product) => product.image_url === value);
+      result = regions.filter((product) => product.image_url === value);
       setResult(result);
       return result;
     } else if (type === 'keyword') {
