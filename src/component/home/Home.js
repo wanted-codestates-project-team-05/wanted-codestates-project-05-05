@@ -1,27 +1,40 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../common/Header';
 import Loading from '../common/Loading';
 
 const Home = () => {
-  const [search, setSearch] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+  const [Keyword, setKeyword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   // input onchange
   const searchHandler = (e) => {
     const { value } = e.target;
-    setSearch(value);
+    setKeyword(value);
   };
   // input enter event
   const enterHandler = (e) => {
     if (e.key === 'Enter') {
-      console.log(`Enter ${search}`);
-      setSearch('');
+      btnOnclick(e);
     }
   };
   // button click event
-  const btnOnclick = (e) => {
-    console.log(`onClick ${search}`);
-    setSearch('');
+  const btnOnclick = () => {
+    if (Keyword === '') return alert('검색어를 입력해주세요.');
+    // http가 포함 되어 있거나 숫자 일경우 => SearchUrl 페이지로 이동
+    if (Keyword.includes('http') || !isNaN(Keyword)) {
+      navigate({
+        pathname: 'searchUrl',
+        search: `searchkey=${Keyword}`,
+      });
+      // 그렇지 않은 경우 searchKeyword 페이지로 이동
+    } else {
+      navigate({
+        pathname: 'searchKeyword',
+        search: `searchkey=${Keyword}`,
+      });
+    }
   };
   return (
     <Wrapper>
@@ -31,7 +44,7 @@ const Home = () => {
       ) : (
         <Main>
           <Sign>
-            <span>Artificial Intelligence</span>
+            <h1>Artificial Intelligence</h1>
             <h1>
               PXL
               <span> Fashion </span>
@@ -43,7 +56,7 @@ const Home = () => {
               type="text"
               placeholder="IMAGE URL or KEYWORD"
               onChange={searchHandler}
-              onKeyPress={(e) => enterHandler(e)}
+              onKeyPress={enterHandler}
             />
             <Btn onClick={btnOnclick}>검색</Btn>
           </Search>
@@ -59,7 +72,6 @@ const Wrapper = styled.div`
   align-items: center;
   flex-direction: column;
 `;
-
 const Main = styled.div`
   display: flex;
   justify-content: center;
@@ -72,10 +84,11 @@ const Sign = styled.div`
   height: 30vh;
   font-size: 3rem;
   color: #4b4b4b;
-  & > span {
+  & > :nth-child(1) {
     font-weight: bold;
+    color: #4b4b4b;
   }
-  & > h1 {
+  & > :nth-child(2) {
     color: #878787;
     > span {
       font-weight: bold;
