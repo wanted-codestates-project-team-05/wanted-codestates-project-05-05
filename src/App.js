@@ -11,22 +11,24 @@
 // }
 
 import React from 'react';
+
 import './App.css';
 import './reset.css';
-import { Routes, Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import Home from './component/home/Home';
-import SearchUrl from './component/searchUrl/SearchUrl';
 import SearchKeyword from './component/searchKeyword/SearchKeyword';
-import Item from './component/common/Item';
+import SearchUrl from './component/searchUrl/SearchUrl';
 
 function App() {
   return (
+    // <BrowserRouter>
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="searchKeyword" element={<SearchKeyword />} />
-      <Route path="searchUrl" element={<SearchUrl />} />
-      <Route path="searchitem" element={<Item />} />
+      <Route path="/search/:name" element={<SearchKeyword />} />
+      <Route path="/search/:image_url" element={<SearchUrl />} />
+      <Route path="/searchUrl" element={<SearchUrl />} />
     </Routes>
+    // </BrowserRouter>
   );
 }
 
