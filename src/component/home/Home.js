@@ -9,28 +9,46 @@ import { products } from '../../Data/products';
 const Home = () => {
   const [query, setQuery] = useLocalStorage('query', '');
   const [result, setResult] = useLocalStorage('result', '');
+  const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const handleChangeInput = (e) => {
+    const { value } = e.target;
+    setInputValue(value);
+  };
   const handleError = () => {
     if (result.length === 0) {
       console.log('검색결과가 없습니다. ');
+    }
+  };
+  const filterResult = (type, value) => {
+    switch (type) {
+      case 'productCode':
+        setResult(products.filter((product) => product.product_code === Number(value)));
+        break;
+      case 'imageURrl':
+        setResult(products.filter((product) => product.image_url === value));
+        break;
+      case 'keyword':
+        setResult(products.filter((product) => product.name.includes(value)));
+        break;
+      default:
+        break;
     }
   };
   const matchingSearchType = async (value) => {
     const productCodeCheck = /^[0-9]*$/;
     const imageUrlCheck = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?(.*?)\.(jpg|jpeg|png|gif|bmp|pdf)$/;
     if (productCodeCheck.test(value)) {
-      const productCodeResult = products.filter((product) => product.product_code === Number(value));
-      await setResult(productCodeResult);
+      await filterResult('imageURrl', value);
       await navigate(`searchUrl/:${value}`);
     } else if (imageUrlCheck.test(value)) {
-      const imageUrlResult = products.filter((product) => product.image_url === value);
-      await setResult(imageUrlResult);
+      await filterResult('productCode', value);
       value = value.replace(/\/|:/g, '_');
       await navigate(`searchUrl/:${value}`);
     } else {
-      const keywordResult = products.filter((product) => product.name.includes(value));
-      await setResult(keywordResult);
+      await filterResult('keyword', value);
       await navigate(`searchKeyword/:${value}`);
-      handleError(result);
     }
   };
   const handleSearch = (e) => {
@@ -38,13 +56,6 @@ const Home = () => {
     setQuery(inputValue);
     matchingSearchType(inputValue);
     setInputValue('');
-  };
-  const navigate = useNavigate();
-  const [inputValue, setInputValue] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const handleChangeInput = (e) => {
-    const { value } = e.target;
-    setInputValue(value);
   };
 
   return (
