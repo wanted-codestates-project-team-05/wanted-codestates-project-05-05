@@ -1,12 +1,14 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 const regionDataUrl = 'https://static.pxl.ai/problem/data/regions.json';
 
 const AttributeList = () => {
-  const params = new URLSearchParams(window.location.search);
-  let searchkey = params.get('searchkey');
+  let [searchParams, setSearchParams] = useSearchParams();
+  let productCode = searchParams.get('productCode');
+  let imageUrl = searchParams.get('imageUrl');
 
   const [gender, setGender] = useState('');
   const [attributes, setAttributes] = useState([]);
@@ -18,30 +20,71 @@ const AttributeList = () => {
       await axios
         .get(regionDataUrl)
         .then((res) => {
-          const genderIndex = res.data[searchkey - 1].gender.indexOf('.');
-          const genderCheck = res.data[searchkey - 1].gender.substring(
-            genderIndex + 1,
-            res.data[searchkey - 1].gender.length
-          );
-          setGender(genderCheck);
-
-          const attributesList = res.data[searchkey - 1].attributes.map((data, i) => {
-            let key = Object.keys(data)[0];
-            return (
-              <div key={key} className="container">
-                <div className="hashtag">#{data[key].toUpperCase()}</div>
-                <div>{key.toUpperCase()}</div>
-              </div>
+          if (productCode) {
+            const genderIndex = res.data[productCode - 1].gender.indexOf('.');
+            const genderCheck = res.data[productCode - 1].gender.substring(
+              genderIndex + 1,
+              res.data[productCode - 1].gender.length
             );
-          });
+            setGender(genderCheck);
 
-          setAttributes(attributesList);
+            const attributesList = res.data[productCode - 1].attributes.map((data, i) => {
+              let key = Object.keys(data)[0];
+              return (
+                <div key={key} className="container">
+                  <div className="hashtag">#{data[key].toUpperCase()}</div>
+                  <div>{key.toUpperCase()}</div>
+                </div>
+              );
+            });
+            setAttributes(attributesList);
+          } else {
+            const localResult = JSON.parse(window.localStorage.getItem('result'));
+            const genderIndex = localResult[0].gender.indexOf('.');
+            const genderCheck = localResult[0].gender.substring(genderIndex + 1, localResult[0].gender.length);
+            setGender(genderCheck);
+
+            const attributesList = localResult[0].attributes.map((data, i) => {
+              let key = Object.keys(data)[0];
+              return (
+                <div key={key} className="container">
+                  <div className="hashtag">#{data[key].toUpperCase()}</div>
+                  <div>{key.toUpperCase()}</div>
+                </div>
+              );
+            });
+            setAttributes(attributesList);
+          }
+
           setIsLoading(false);
         })
         .catch((err) => {});
     };
-    getResionData();
-  }, []);
+    // getProductData();
+    return getResionData();
+    return;
+  }, [searchParams]);
+
+  // useEffect(() => {
+  //   const localResult = JSON.parse(window.localStorage.getItem('result'));
+  //   // const productIndex = localResult[0].name.indexOf('_');
+  //   // const product = localResult[0].name.substring(0, productIndex);
+  //   const genderIndex = localResult[0].gender.indexOf('.');
+  //   const genderCheck = localResult[0].gender.substring(genderIndex + 1, localResult[0].gender.length);
+  //   setGender(genderCheck);
+  //   const attributesList = localResult[0].attributes.map((data, i) => {
+  //     let key = Object.keys(data)[0];
+  //     return (
+  //       <div key={key} className="container">
+  //         <div className="hashtag">#{data[key].toUpperCase()}</div>
+  //         <div>{key.toUpperCase()}</div>
+  //       </div>
+  //     );
+  //   });
+
+  //   setAttributes(attributesList);
+  //   setIsLoading(false);
+  // }, [productCode]);
 
   if (isLoading) return <div>loading</div>;
 
@@ -67,7 +110,7 @@ const Title = styled.div`
 const Attribute = styled.div`
   .container {
     display: inline-block;
-
+    font-weight: 400;
     padding-right: 10px;
     padding-bottom: 15px;
     .hashtag {

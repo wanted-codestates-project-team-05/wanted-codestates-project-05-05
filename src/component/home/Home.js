@@ -1,67 +1,113 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../common/Header';
 import Loading from '../common/Loading';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import { products } from '../../Data/products';
+import { regions } from '../../Data/regions';
 
 const Home = () => {
   const [query, setQuery] = useLocalStorage('query', '');
   const [result, setResult] = useLocalStorage('result', '');
+  const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+
+  const navigate = useNavigate();
+  const handleChangeInput = (e) => {
+    const { value } = e.target;
+    setInputValue(value);
+  };
+  const filterResult = (type, value) => {
+    let result = [];
+    if (type === 'productCode') {
+      result = regions.filter((product) => product.product_code === Number(value));
+      setResult(result);
+      return result;
+    } else if (type === 'imageUrl') {
+      result = regions.filter((product) => product.image_url === value);
+
+      setResult(result);
+      return result;
+    } else if (type === 'keyword') {
+      result = products.filter((product) => product.name.includes(value));
+      setResult(result);
+      return result;
+    } else {
+      console.log('타입지정 에러');
+    }
+  };
   const handleError = () => {
+    console.log('검색결과 없음');
+    setIsError(true);
+  };
+  const goSearchUrl = (result, value, type) => {
     if (result.length === 0) {
-      console.log('검색결과가 없습니다. ');
+      handleError();
+    } else {
+      navigate(`searchUrl?${type}=${value}`);
+    }
+  };
+  const goSearchKeyword = (result, value) => {
+    if (result.length === 0) {
+      handleError();
+    } else {
+      navigate(`searchKeyword?keyword=${value}`);
     }
   };
   const matchingSearchType = async (value) => {
     const productCodeCheck = /^[0-9]*$/;
-    const imageUrlCheck = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?(.*?)\.(jpg|jpeg|png|gif|bmp|pdf)$/;
+    const imageUrlCheck =
+      /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?(.*?)\.(jpg|jpeg|png|gif|bmp|pdf)$/;
     if (productCodeCheck.test(value)) {
-      const productCodeResult = products.filter((product) => product.product_code === Number(value));
-      await setResult(productCodeResult);
-      await navigate(`searchUrl/:${value}`);
+      const result = filterResult('productCode', value);
+      goSearchUrl(result, value, 'productCode');
     } else if (imageUrlCheck.test(value)) {
-      const imageUrlResult = products.filter((product) => product.image_url === value);
-      await setResult(imageUrlResult);
-      value = value.replace(/\/|:/g, '_');
-      await navigate(`searchUrl/:${value}`);
+      const result = filterResult('imageUrl', value);
+      goSearchUrl(result, value, 'imageUrl');
     } else {
-      const keywordResult = products.filter((product) => product.name.includes(value));
-      await setResult(keywordResult);
-      await navigate(`searchKeyword/:${value}`);
-      handleError(result);
+      const result = filterResult('keyword', value);
+      goSearchKeyword(result, value);
     }
   };
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     setQuery(inputValue);
-    matchingSearchType(inputValue);
-    setInputValue('');
-  };
-  const navigate = useNavigate();
-  const [inputValue, setInputValue] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const handleChangeInput = (e) => {
-    const { value } = e.target;
-    setInputValue(value);
+    setTimeout(() => {
+      setIsLoading(false);
+      matchingSearchType(inputValue);
+      setInputValue('');
+    }, 1000);
   };
 
   return (
     <Wrapper>
       <Header />
       {isLoading ? (
-        <Loading message="메인 페이지 로딩중" />
+        <Loading message="Loading data..." />
       ) : (
         <Main>
-          <Sign>
-            <h1>Artificial Intelligence</h1>
-            <h1>
-              PXL
-              <span> Fashion </span>
-              Viewer
-            </h1>
-          </Sign>
+          {isError ? (
+            <Sign>
+              <h1>No results found...</h1>
+              <Des>
+                <li>product 코드 검색: 숫자만 입력(ex: 1)</li>
+                <li>url 검색: url 입력(ex: https://static.pxl.ai/problem/images/VT-070.jpg)</li>
+                <li>키워드 검색 : 키워드 입력 (ex: 원피스)</li>
+              </Des>
+            </Sign>
+          ) : (
+            <Sign>
+              <h1>Artificial Intelligence</h1>
+              <h1>
+                PXL
+                <span> Fashion </span>
+                Viewer
+              </h1>
+            </Sign>
+          )}
           <Form onSubmit={handleSearch}>
             <Input type="text" placeholder="IMAGE URL or KEYWORD" onChange={handleChangeInput} value={inputValue} />
             <Btn type="submit">검색</Btn>
@@ -134,6 +180,12 @@ const Btn = styled.button`
   font-weight: 600;
   cursor: pointer;
   color: #4b4b4b;
+`;
+
+const Des = styled.ul`
+  font-size: 1.5rem;
+  color: grey;
+  list-style: square;
 `;
 
 export default Home;

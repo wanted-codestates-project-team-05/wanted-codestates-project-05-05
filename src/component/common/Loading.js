@@ -21,6 +21,7 @@ const Container = styled.div`
 `;
 
 const Contents = styled.h1`
+  font-weight: 600;
   margin-top: 2rem;
   font-size: 1.5rem;
   font-family: 'Courier New', Courier, monospace;
