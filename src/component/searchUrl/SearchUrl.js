@@ -1,10 +1,21 @@
 import React from 'react';
-import Item from './item/Item';
+import Product from './item/Product';
+import Header from '../common/Header';
+import CardContainer from './item/CardContainer';
+import styled from 'styled-components';
 
 const SearchUrl = (props) => (
   <div>
-    <Item />
+    <Header />
+    <Contents>
+      <Product />
+      <CardContainer />
+    </Contents>
   </div>
 );
+
+const Contents = styled.div`
+  display: flex;
+`;
 
 export default SearchUrl;
