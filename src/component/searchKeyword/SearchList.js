@@ -7,38 +7,34 @@ export const SearchList = (props) => {
   const { searchKeyword, dataList } = props;
   const [cardNum, setCardNum] = useState(30);
 
-  return (
-    <>
-      <Container>
-        {dataList &&
-          dataList
-            .filter((item, index) => item.name.includes(searchKeyword))
-            .filter((item, index) => index <= cardNum)
-            .map((product) => (
-              <Item
-                key={product.product_code}
-                name={product.name}
-                image_url={product.image_url}
-                price={product.price}
-              ></Item>
-            ))}
-      </Container>
-      <ButtonWrapper>
-        {dataList ? (
-          dataList.filter((item, index) => item.name.includes(searchKeyword)).filter((item, index) => index <= cardNum)
-            .length < cardNum ? (
-            ''
-          ) : (
-            <MoreButton cardNum={cardNum} setCardNum={setCardNum} />
-          )
-        ) : (
-          ''
-        )}
-      </ButtonWrapper>
-    </>
-  );
-};
-
+	return (
+		<>
+		<Container>
+			{
+				dataList && 
+				dataList.filter((item, index) => item.name.includes(searchKeyword))
+				.filter((item, index) => index <= cardNum)
+				.map((product) => (
+					<Item 
+						key={product.product_code} 
+						name={product.name} 
+						image_url={product.image_url} 
+						price={product.price}>
+					</Item>
+				))
+			}
+		</Container>
+		<ButtonWrapper>
+			{dataList ? 
+				dataList.filter((item, index) => item.name.includes(searchKeyword))
+						.filter((item, index) => index <= cardNum).length < cardNum 
+						? '' : <MoreButton cardNum={cardNum} setCardNum={setCardNum}/> 
+						: ''
+			}
+		</ButtonWrapper>
+		</>
+	)
+}
 
 const Container = styled.div`
 	width: calc(10.75rem * 8 + 8 * 0.625rem);
