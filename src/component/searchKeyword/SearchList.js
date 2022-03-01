@@ -1,24 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Item from '../common/Item';
 import { MoreButton } from './MoreButton';
-import TextHighlight from '../common/TextHighlight';
 
 export const SearchList = (props) => {
 
 	const { searchKeyword, dataList } = props;
 	const [cardNum, setCardNum] = useState(30);
-	// const searchKeyword = '원피스';
-
-	// const fetchData = async () => {
-	// 	const response = await axios.get('https://static.pxl.ai/problem/data/products.json')
-		
-	// 	setData(response.data);
-	// }
-
-	// useEffect(() => {
-	// 	fetchData();
-	// }, [])
 
 	return (
 		<>
