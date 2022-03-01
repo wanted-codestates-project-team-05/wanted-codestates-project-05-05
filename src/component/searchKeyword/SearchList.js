@@ -4,8 +4,8 @@ import Item from '../common/Item';
 import { MoreButton } from './MoreButton';
 
 export const SearchList = (props) => {
-  const { searchKeyword, dataList } = props;
-  const [cardNum, setCardNum] = useState(30);
+	const { searchKeyword, dataList } = props;
+	const [cardNum, setCardNum] = useState(30);
 
 	return (
 		<>
