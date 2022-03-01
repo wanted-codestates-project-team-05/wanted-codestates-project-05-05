@@ -15,7 +15,7 @@ const SearchKeyword = (props) => {
     const response = await axios.get(url);
     return response;
   };
-
+  console.log(queryData);
   useEffect(() => {
     setIsLoading(true);
     getData(url)
