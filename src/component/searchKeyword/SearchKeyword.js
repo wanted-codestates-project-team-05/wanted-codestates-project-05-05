@@ -1,56 +1,47 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import Header from '../common/Header';
+import { SearchList } from '../searchKeyword/SearchList';
+import useLocalStorage from '../../hooks/useLocalStorage';
+import Loading from '../common/Loading';
 import QueryString from 'qs';
 
 const url = 'https://static.pxl.ai/problem/data/products.json';
 
 const SearchKeyword = (props) => {
+
   const navigate = useNavigate();
-  const location = useLocation();
-  const queryData = QueryString.parse(location.search, { ignoreQueryPrefix: true });
+	const location = useLocation();
+	const queryData = QueryString.parse(location.search, { ignoreQueryPrefix: true });
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState([]);
-  const getData = async (url) => {
-    const response = await axios.get(url);
-    return response;
-  };
-  console.log(queryData);
-  useEffect(() => {
-    setIsLoading(true);
-    getData(url)
-      .then((res) => {
-        setData(res.data.filter((item) => item.name.includes(queryData.searchkey)));
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        setIsLoading(false);
-        alert('error! ', err);
-        navigate('/', { replace: true });
-      });
-  }, [navigate, queryData.searchkey]);
+  const [data, setData] = useLocalStorage('result', '');
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
+	const getData = async () => {
+		const response = await axios.get(url)
+		.then((res) => res.data.filter((product) => product.name.includes(queryData.keyword)))
+		.catch(() => {
+			alert('데이터를 불러오는데 실패하였습니다.');
+			navigate('/');
+			return;
+		})
 
-  useEffect(() => {
-    console.log(isLoading);
-  }, [isLoading]);
+		setData(response);
+	}
 
-  if (isLoading) return <div>Loading</div>;
+	useEffect(() => {
+		if(window.localStorage.getItem(queryData.keyword)) {
+			setIsLoading(true)
+		} else {
+			getData();
+		}
+	}, [])
+
+  if (isLoading) return <Loading/>;
   return (
     <>
-      {data.map((item) => (
-        <div>
-          <span>{item.name} </span>
-          <a href={item.image_url} target={'_blank'} rel={'noreferrer'}>
-            {item.image_url}{' '}
-          </a>
-          <span>{item.price}원 </span>
-        </div>
-      ))}
-      ;
+			<Header/>
+			<SearchList searchKeyword={queryData.keyword} dataList={data}/>
     </>
   );
 };
