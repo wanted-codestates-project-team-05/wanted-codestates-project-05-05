@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../common/Header';
@@ -8,49 +8,39 @@ import useLocalStorage from '../../hooks/useLocalStorage';
 const Home = () => {
   const [query, setQuery] = useLocalStorage('query', '');
   const [result, setResult] = useLocalStorage('result', '');
-  const [products, setProducts] = useLocalStorage('products', '');
-  const [regions, setRegions] = useLocalStorage('regions', '');
+
+  const [products, setProducts] = useLocalStorage('products', []);
+  const [regions, setRegions] = useLocalStorage('regions', []);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const networkRequest = async (searchType) => {
-    const requestOptions = {
-      method: 'GET',
-      redirect: 'follow'
-    };
-    const dataType = searchType === 'keyword' ? 'products' : 'regions';
-    const data = await fetch(`https://static.pxl.ai/problem/data/${dataType}.json`, requestOptions)
-      .then(response => response.json())
-      .catch(error => console.log(error, '네트워크 요청 에러'));
-
-    return data;
+  const requestOptions = {
+    method: 'GET',
+    redirect: 'follow',
   };
+  useEffect(() => {
+    if (regions.length === 0) {
+      fetch(`https://static.pxl.ai/problem/data/regions.json`, requestOptions)
+        .then((response) => response.json())
+        .then((response) => setRegions(response))
+        .catch((error) => console.log(error, '네트워크 요청 에러'));
+    }
+    if (products.length === 0) {
+      fetch(`https://static.pxl.ai/problem/data/products.json`, requestOptions)
+        .then((response) => response.json())
+        .then((response) => setProducts(response))
+        .catch((error) => console.log(error, '네트워크 요청 에러'));
+    }
+  }, [products.length, regions.length, setProducts, setRegions]);
   const getData = async (value, searchType) => {
     let result = [];
-    if (searchType === 'keyword') {
-      if (products.length === 0) {
-        const data = await networkRequest(searchType);
-        setProducts(data);
-        result = data.filter((product) => product.name.includes(value));
-      } else {
-        result = products.filter((product) => product.name.includes(value));
-      }
-    } else {
-      if (regions.length === 0) {
-        const data = await networkRequest(searchType);
-        setRegions(data);
-        if (searchType === 'productCode') {
-          result = data.filter((product) => product.product_code === Number(value));
-        } else {
-          result = data.filter((product) => product.image_url === value);
-        }
-      } else {
-        if (searchType === 'productCode') {
-          result = regions.filter((product) => product.product_code === Number(value));
-        } else {
-          result = regions.filter((product) => product.image_url === value);
-        }
-      }
+    if (searchType === 'productCode') {
+      console.log(regions);
+      result = regions.filter((product) => product.product_code === Number(value));
+    } else if (searchType === 'imageUrl') {
+      result = regions.filter((product) => product.image_url === value);
+    } else if (searchType === 'keyword') {
+      result = products.filter((product) => product.name.includes(value));
     }
     setResult(result);
     return result;
@@ -80,7 +70,8 @@ const Home = () => {
   };
   const matchingSearchType = async (value) => {
     const productCodeCheck = /^[0-9]*$/;
-    const imageUrlCheck = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?(.*?)\.(jpg|jpeg|png|gif|bmp|pdf)$/;
+    const imageUrlCheck =
+      /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?(.*?)\.(jpg|jpeg|png|gif|bmp|pdf)$/;
     setIsLoading(true);
     try {
       if (productCodeCheck.test(value)) {

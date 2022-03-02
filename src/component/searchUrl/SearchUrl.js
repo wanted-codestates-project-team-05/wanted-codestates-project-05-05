@@ -5,7 +5,7 @@ import CardContainer from './item/CardContainer';
 import styled from 'styled-components';
 import { StickyContainer } from 'react-sticky';
 
-const SearchUrl = (props) => {
+const SearchUrl = () => {
   return (
     <div>
       <Header />

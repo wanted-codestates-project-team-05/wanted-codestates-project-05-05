@@ -1,78 +1,54 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import styled from 'styled-components';
-
 import AttributeList from './AttributeList';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import Loading from '../../common/Loading';
-
-const productDataUrl = 'https://static.pxl.ai/problem/data/products.json';
+import useLocalStorage from '../../../hooks/useLocalStorage';
 
 const Item = (props) => {
   let [searchParams, setSearchParams] = useSearchParams();
   let productCode = searchParams.get('productCode');
-  let imageUrl = searchParams.get('imageUrl');
-
   const [productImg, setProductImg] = useState();
   const [productName, setProductName] = useState();
   const [categoryName, setCategoryName] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
-  const navigate = useNavigate();
-
-  // console.log(localResult[0]);
+  const [allProducts, setAllProducts] = useLocalStorage('products');
+  const [result, setResult] = useLocalStorage('result');
 
   useEffect(() => {
-    const getProductData = async () => {
-      setIsLoading(true);
-      await axios
-        .get(productDataUrl)
-        .then((res) => {
-          // product, category name만 찾기
-          // console.log(res);
-          if (productCode) {
-            const productIndex = res.data[productCode - 1].name.indexOf('_');
-            const product = res.data[productCode - 1].name.substring(0, productIndex);
-            setProductName(product);
+    setIsLoading(true);
+    if (productCode) {
+      const productIndex = allProducts[productCode - 1].name.indexOf('_');
+      const product = allProducts[productCode - 1].name.substring(0, productIndex);
+      setProductName(product);
 
-            const productImg = res.data[productCode - 1].image_url;
-            setProductImg(productImg);
+      const productImg = allProducts[productCode - 1].image_url;
+      setProductImg(productImg);
 
-            const categories = res.data[productCode - 1].category_names.map((category) => {
-              if (category === '') return;
-              const categoryIndex = category.indexOf('.');
-              const categoryName = category.substring(categoryIndex + 1, category.length).toUpperCase();
-              return <Category key={category}>{categoryName}</Category>;
-            });
-            setCategoryName(categories);
-          } else {
-            const localResult = JSON.parse(window.localStorage.getItem('result'));
-            // const productIndex = localResult[0].gender.indexOf('_');
-            // const product = localResult[0].gender.substring(0, productIndex);
-            const product = localResult[0].gender;
-            setProductName(product);
+      const categories = allProducts[productCode - 1].category_names.map((category) => {
+        if (category === '') return;
+        const categoryIndex = category.indexOf('.');
+        const categoryName = category.substring(categoryIndex + 1, category.length).toUpperCase();
+        return <Category key={category}>{categoryName}</Category>;
+      });
+      setCategoryName(categories);
+    } else {
+      const product = result[0].gender;
+      //fix : gender -> name
+      setProductName(product);
 
-            const productImg = localResult[0].image_url;
-            setProductImg(productImg);
+      const productImg = result[0].image_url;
+      setProductImg(productImg);
 
-            const categories = localResult[0].category_names.map((category) => {
-              if (category === '') return;
-              const categoryIndex = category.indexOf('.');
-              const categoryName = category.substring(categoryIndex + 1, category.length).toUpperCase();
-              return <Category key={category}>{categoryName}</Category>;
-            });
-            setCategoryName(categories);
-          }
-
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          alert('데이터를 불러오는데 실패하였습니다.');
-          navigate('/');
-        });
-    };
-    getProductData();
-    return () => setProductName(null), setProductImg(null);
+      const categories = result[0].category_names.map((category) => {
+        if (category === '') return;
+        const categoryIndex = category.indexOf('.');
+        const categoryName = category.substring(categoryIndex + 1, category.length).toUpperCase();
+        return <Category key={category}>{categoryName}</Category>;
+      });
+      setCategoryName(categories);
+    }
+    setIsLoading(false);
   }, [searchParams]);
 
   if (isLoading) return <Loading />;
