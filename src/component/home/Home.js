@@ -30,14 +30,13 @@ const Home = () => {
         .then((response) => setProducts(response))
         .catch((error) => console.log(error, '네트워크 요청 에러'));
     }
-  }, [products.length, regions.length, setProducts, setRegions]);
+  }, [products.length, regions.length, setProducts, setRegions, requestOptions]);
   const getData = async (value, searchType) => {
     let result = [];
     if (searchType === 'productCode') {
-      console.log(regions);
-      result = regions.filter((product) => product.product_code === Number(value));
+      result = regions.filter((region) => region.product_code === Number(value));
     } else if (searchType === 'imageUrl') {
-      result = regions.filter((product) => product.image_url === value);
+      result = regions.filter((region) => region.image_url === value);
     } else if (searchType === 'keyword') {
       result = products.filter((product) => product.name.includes(value));
     }

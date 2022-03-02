@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../common/Header';
@@ -6,8 +5,7 @@ import { SearchList } from '../searchKeyword/SearchList';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import Loading from '../common/Loading';
 import QueryString from 'qs';
-
-const url = 'https://static.pxl.ai/problem/data/products.json';
+import { getProducts } from '../../service/api';
 
 const SearchKeyword = (props) => {
   const navigate = useNavigate();
@@ -17,16 +15,14 @@ const SearchKeyword = (props) => {
   const [data, setData] = useLocalStorage('result', '');
 
   const getData = async () => {
-    const response = await axios
-      .get(url)
-      .then((res) => res.data.filter((product) => product.name.includes(queryData.keyword)))
-      .catch(() => {
-        alert('데이터를 불러오는데 실패하였습니다.');
-        navigate('/');
-        return;
-      });
-
-    setData(response);
+    try{
+      const data = await getProducts();
+      setData(data.filter((product) => product.name.includes(queryData.keyword)));
+    }
+    catch (err){
+      alert('데이터를 불러오는데 실패하였습니다.');
+      navigate('/');
+    }
   };
 
   useEffect(() => {
