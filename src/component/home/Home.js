@@ -1,42 +1,64 @@
 import React, { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../common/Header';
 import Loading from '../common/Loading';
 import useLocalStorage from '../../hooks/useLocalStorage';
-import { products } from '../../Data/products';
-import { regions } from '../../Data/regions';
 
 const Home = () => {
   const [query, setQuery] = useLocalStorage('query', '');
   const [result, setResult] = useLocalStorage('result', '');
+  const [products, setProducts] = useLocalStorage('products', '');
+  const [regions, setRegions] = useLocalStorage('regions', '');
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const networkRequest = async (searchType) => {
+    const requestOptions = {
+      method: 'GET',
+      redirect: 'follow'
+    };
+    const dataType = searchType === 'keyword' ? 'products' : 'regions';
+    const data = await fetch(`https://static.pxl.ai/problem/data/${dataType}.json`, requestOptions)
+      .then(response => response.json())
+      .catch(error => console.log(error, '네트워크 요청 에러'));
 
+    return data;
+  };
+  const getData = async (value, searchType) => {
+    let result = [];
+    if (searchType === 'keyword') {
+      if (products.length === 0) {
+        const data = await networkRequest(searchType);
+        setProducts(data);
+        result = data.filter((product) => product.name.includes(value));
+      } else {
+        result = products.filter((product) => product.name.includes(value));
+      }
+    } else {
+      if (regions.length === 0) {
+        const data = await networkRequest(searchType);
+        setRegions(data);
+        if (searchType === 'productCode') {
+          result = data.filter((product) => product.product_code === Number(value));
+        } else {
+          result = data.filter((product) => product.image_url === value);
+        }
+      } else {
+        if (searchType === 'productCode') {
+          result = regions.filter((product) => product.product_code === Number(value));
+        } else {
+          result = regions.filter((product) => product.image_url === value);
+        }
+      }
+    }
+    setResult(result);
+    return result;
+  };
   const navigate = useNavigate();
   const handleChangeInput = (e) => {
     const { value } = e.target;
     setInputValue(value);
-  };
-  const filterResult = (type, value) => {
-    let result = [];
-    if (type === 'productCode') {
-      result = regions.filter((product) => product.product_code === Number(value));
-      setResult(result);
-      return result;
-    } else if (type === 'imageUrl') {
-      result = regions.filter((product) => product.image_url === value);
-
-      setResult(result);
-      return result;
-    } else if (type === 'keyword') {
-      result = products.filter((product) => product.name.includes(value));
-      setResult(result);
-      return result;
-    } else {
-      console.log('타입지정 에러');
-    }
   };
   const handleError = () => {
     console.log('검색결과 없음');
@@ -58,28 +80,29 @@ const Home = () => {
   };
   const matchingSearchType = async (value) => {
     const productCodeCheck = /^[0-9]*$/;
-    const imageUrlCheck =
-      /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?(.*?)\.(jpg|jpeg|png|gif|bmp|pdf)$/;
-    if (productCodeCheck.test(value)) {
-      const result = filterResult('productCode', value);
-      goSearchUrl(result, value, 'productCode');
-    } else if (imageUrlCheck.test(value)) {
-      const result = filterResult('imageUrl', value);
-      goSearchUrl(result, value, 'imageUrl');
-    } else {
-      const result = filterResult('keyword', value);
-      goSearchKeyword(result, value);
+    const imageUrlCheck = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?(.*?)\.(jpg|jpeg|png|gif|bmp|pdf)$/;
+    setIsLoading(true);
+    try {
+      if (productCodeCheck.test(value)) {
+        const result = await getData(value, 'productCode');
+        goSearchUrl(result, value, 'productCode');
+      } else if (imageUrlCheck.test(value)) {
+        const result = await getData(value, 'imageUrl');
+        goSearchUrl(result, value, 'imageUrl');
+      } else {
+        const result = await getData(value, 'keyword');
+        goSearchKeyword(result, value);
+      }
+    } catch (error) {
+      console.log(error, '검색알고리즘 에러');
     }
+    setIsLoading(false);
   };
   const handleSearch = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
     setQuery(inputValue);
-    setTimeout(() => {
-      setIsLoading(false);
-      matchingSearchType(inputValue);
-      setInputValue('');
-    }, 1000);
+    await matchingSearchType(inputValue);
+    setInputValue('');
   };
 
   return (
