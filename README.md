@@ -36,15 +36,10 @@ npm run start
 - CSS는 styled-component를 사용하였습니다.
 - 배포는 vercel 을 이용하여 진행했습니다
 
-# 배포주소
+# 배포 링크
 
-```jsx
-<과제1>
-https://wanted-codestates-project-05-05-01.vercel.app/
-
-<과제2>
-https://wanted-codestates-project-05-05-02-sigma.vercel.app/
-```
+<과제1><https://wanted-codestates-project-05-05-01.vercel.app/><br>
+<과제2><https://wanted-codestates-project-05-05-02-sigma.vercel.app/>
 
 # 구현 내용
 
