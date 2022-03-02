@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import QueryString from 'qs';
 import { useLocation, useNavigate } from 'react-router';
@@ -17,10 +18,9 @@ const Item = (props) => {
     window.open(`${image_url}`, '_blank');
   };
 
-  // console.log(keyWord);
   return (
     <Container onClick={onClickItem}>
-      <img src={image_url} alt={name + '이미지'} className="prod-img" />
+      <Img src={image_url} alt={name + '이미지'} className="prod-img" />
       <div className="prod-txt">
         <p className="prod-tit">
           <TextHighlight text={name} keyword={keyWord} />
@@ -30,6 +30,10 @@ const Item = (props) => {
     </Container>
   );
 };
+
+const Img = styled.img`
+  cursor: pointer;
+`;
 
 const Container = styled.li`
   width: 170px;

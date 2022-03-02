@@ -20,6 +20,7 @@ const CardContainer = (props) => {
 
   useEffect(() => {
     setIsLoading(true);
+
     try {
       if (productCode) {
         const productIndex = allProducts[productCode - 1].name.indexOf('_');
@@ -34,6 +35,7 @@ const CardContainer = (props) => {
     } catch (err) {
       console.log(err, '데이터를 불러오는데 실패하였습니다.');
     }
+
     setIsLoading(false);
     return () => setProducts(null);
   }, [searchParams]);

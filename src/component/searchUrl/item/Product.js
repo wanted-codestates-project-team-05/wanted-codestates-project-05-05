@@ -8,7 +8,6 @@ import useLocalStorage from '../../../hooks/useLocalStorage';
 const Item = (props) => {
   let [searchParams, setSearchParams] = useSearchParams();
   let productCode = searchParams.get('productCode');
-  let imgCode = searchParams.get('imageUrl');
   const [productImg, setProductImg] = useState();
   const [productName, setProductName] = useState();
   const [categoryName, setCategoryName] = useState([]);
@@ -18,16 +17,14 @@ const Item = (props) => {
 
   useEffect(() => {
     setIsLoading(true);
+
     try {
       if (productCode) {
-        console.log(productCode);
         const productIndex = allProducts[productCode - 1].name.indexOf('_');
         const product = allProducts[productCode - 1].name.substring(0, productIndex);
         setProductName(product);
         const productImg = allProducts[productCode - 1].image_url;
         setProductImg(productImg);
-        console.log(allProducts[productCode - 1].category_names);
-        console.log(productCode);
         const categories = allProducts[productCode - 1].category_names.map((category) => {
           if (category === '') return;
           const categoryIndex = category.indexOf('.');
@@ -49,7 +46,6 @@ const Item = (props) => {
           return <Category key={category}>{categoryName}</Category>;
         });
         setCategoryName(categories);
-        console.log(categories);
       }
     } catch (err) {
       console.log(err);

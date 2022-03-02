@@ -8,7 +8,6 @@ import useLocalStorage from '../../hooks/useLocalStorage';
 const Home = () => {
   const [query, setQuery] = useLocalStorage('query', '');
   const [result, setResult] = useLocalStorage('result', '');
-
   const [products, setProducts] = useLocalStorage('products', []);
   const [regions, setRegions] = useLocalStorage('regions', []);
   const [inputValue, setInputValue] = useState('');
@@ -104,14 +103,14 @@ const Home = () => {
       ) : (
         <Main>
           {isError ? (
-            <Sign>
+            <ErrorNotice>
               <h1>No results found...</h1>
               <Des>
                 <li>product 코드 검색: 숫자만 입력(ex: 1)</li>
                 <li>url 검색: url 입력(ex: https://static.pxl.ai/problem/images/VT-070.jpg)</li>
                 <li>키워드 검색 : 키워드 입력 (ex: 원피스)</li>
               </Des>
-            </Sign>
+            </ErrorNotice>
           ) : (
             <Sign>
               <h1>Artificial Intelligence</h1>
@@ -150,15 +149,29 @@ const Sign = styled.div`
   height: 30vh;
   font-size: 3rem;
   color: #4b4b4b;
+
   & > :nth-child(1) {
     font-weight: bold;
     color: #4b4b4b;
+    font-size: 2rem;
   }
   & > :nth-child(2) {
     color: #878787;
+    font-size: 2rem;
     > span {
       font-weight: bold;
       color: #4b4b4b;
+    }
+  }
+
+  @media screen and (max-width: 500px) {
+    height: 15vh;
+    & > :nth-child(1) {
+      font-size: 1.7rem;
+      & > :nth-child(2) {
+        color: #878787;
+        font-size: 1.7rem;
+      }
     }
   }
 `;
@@ -182,7 +195,7 @@ const Input = styled.input`
     width: 28rem;
   }
   @media screen and (max-width: 500px) {
-    width: 17rem;
+    width: 20rem;
   }
 `;
 const Btn = styled.button`
@@ -194,12 +207,27 @@ const Btn = styled.button`
   font-weight: 600;
   cursor: pointer;
   color: #4b4b4b;
+  @media screen and (max-width: 500px) {
+    display: none;
+  }
 `;
 
 const Des = styled.ul`
   font-size: 1.5rem;
   color: grey;
   list-style: square;
+  @media screen and (max-width: 500px) {
+    font-size: 1rem;
+  }
+`;
+
+const ErrorNotice = styled.div`
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  @media screen and (max-width: 500px) {
+    font-size: 1.5rem;
+  }
 `;
 
 export default Home;
