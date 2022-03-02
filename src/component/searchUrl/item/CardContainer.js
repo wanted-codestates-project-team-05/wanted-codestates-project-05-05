@@ -1,51 +1,43 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Item from '../../common/Item';
 import Loading from '../../common/Loading';
 import { MoreButton } from '../../searchKeyword/MoreButton';
-
-const productDataUrl = 'https://static.pxl.ai/problem/data/products.json';
+import useLocalStorage from '../../../hooks/useLocalStorage';
 
 const CardContainer = (props) => {
   let [searchParams, setSearchParams] = useSearchParams();
   let productCode = searchParams.get('productCode');
   let imageUrl = searchParams.get('imageUrl');
 
+  const [allProducts, setAllProducts] = useLocalStorage('products');
+  // 필터링된 데이터
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [cardNum, setCardNum] = useState(30);
-
   const navigate = useNavigate();
 
   useEffect(() => {
-    const getProductData = async () => {
-      setIsLoading(true);
-      await axios
-        .get(productDataUrl)
-        .then((res) => {
-          if (productCode) {
-            const productIndex = res.data[productCode - 1].name.indexOf('_');
-            const productName = res.data[productCode - 1].name.substring(0, productIndex);
-            setProducts(res.data.filter((product) => product.name.includes(productName)));
-            // setIsLoading(false);
-          } else {
-            const findProduct = res.data.filter((data) => data.image_url === imageUrl);
-            const productIndex = findProduct[0].name.indexOf('_');
-            const productName = findProduct[0].name.substring(0, productIndex);
-            setProducts(res.data.filter((product) => product.name.includes(productName)));
-          }
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          alert('데이터를 불러오는데 실패하였습니다.');
-          navigate('/');
-        });
-    };
-    getProductData();
+    setIsLoading(true);
+    // try {
+      if (productCode) {
+        const productIndex = allProducts[productCode - 1].name.indexOf('_');
+        const productName = allProducts[productCode - 1].name.substring(0, productIndex);
+        setProducts(allProducts.filter((product) => product.name.includes(productName)));
+      } else {
+        const findProduct = allProducts.filter((data) => data.image_url === imageUrl);
+        const productIndex = findProduct[0].name.indexOf('_');
+        const productName = findProduct[0].name.substring(0, productIndex);
+        setProducts(allProducts.filter((product) => product.name.includes(productName)));
+      }
+    // }
+    // catch (err) {
+    //   console.log(err, '데이터를 불러오는데 실패하였습니다.');
+    //   navigate('/');
+    // }
+    setIsLoading(false);
     return () => setProducts(null);
-    // return () => getProductData.cancel();
   }, [searchParams]);
 
   if (isLoading) return <Loading />;

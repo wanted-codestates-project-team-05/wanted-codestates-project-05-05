@@ -5,9 +5,7 @@ import CardContainer from './item/CardContainer';
 import styled from 'styled-components';
 import { StickyContainer } from 'react-sticky';
 
-const SearchUrl = (props) => {
-  // const params = props.match.params.product_code;
-  // console.log(params);
+const SearchUrl = () => {
 
   return (
     <div>
