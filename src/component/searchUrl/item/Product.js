@@ -17,48 +17,53 @@ const Item = (props) => {
 
   useEffect(() => {
     setIsLoading(true);
-    if (productCode) {
-      const productIndex = allProducts[productCode - 1].name.indexOf('_');
-      const product = allProducts[productCode - 1].name.substring(0, productIndex);
-      setProductName(product);
 
-      const productImg = allProducts[productCode - 1].image_url;
-      setProductImg(productImg);
-
-      const categories = allProducts[productCode - 1].category_names.map((category) => {
-        if (category === '') return;
-        const categoryIndex = category.indexOf('.');
-        const categoryName = category.substring(categoryIndex + 1, category.length).toUpperCase();
-        return <Category key={category}>{categoryName}</Category>;
-      });
-      setCategoryName(categories);
-    } else {
-      const product = result[0].gender;
-      //fix : gender -> name
-      setProductName(product);
-
-      const productImg = result[0].image_url;
-      setProductImg(productImg);
-
-      const categories = result[0].category_names.map((category) => {
-        if (category === '') return;
-        const categoryIndex = category.indexOf('.');
-        const categoryName = category.substring(categoryIndex + 1, category.length).toUpperCase();
-        return <Category key={category}>{categoryName}</Category>;
-      });
-      setCategoryName(categories);
+    try {
+      if (productCode) {
+        const productIndex = allProducts[productCode - 1].name.indexOf('_');
+        const product = allProducts[productCode - 1].name.substring(0, productIndex);
+        setProductName(product);
+        const productImg = allProducts[productCode - 1].image_url;
+        setProductImg(productImg);
+        const categories = allProducts[productCode - 1].category_names.map((category) => {
+          if (category === '') return;
+          const categoryIndex = category.indexOf('.');
+          const categoryName = category.substring(categoryIndex + 1, category.length).toUpperCase();
+          return <Category key={category}>{categoryName}</Category>;
+        });
+        setCategoryName(categories);
+      } else {
+        const productCode = result[0].product_code;
+        const productIndex = allProducts[productCode - 1].name.indexOf('_');
+        const product = allProducts[productCode - 1].name.substring(0, productIndex);
+        setProductName(product);
+        const productImg = result[0].image_url;
+        setProductImg(productImg);
+        const categories = result[0].category_names.map((category) => {
+          if (category === '') return;
+          const categoryIndex = category.indexOf('.');
+          const categoryName = category.substring(categoryIndex + 1, category.length).toUpperCase();
+          return <Category key={category}>{categoryName}</Category>;
+        });
+        setCategoryName(categories);
+      }
+    } catch (err) {
+      console.log(err);
     }
+
     setIsLoading(false);
+    return () => setResult(null);
   }, [searchParams]);
 
   if (isLoading) return <Loading />;
 
-  return (
+  return isLoading ? (
+    <Loading />
+  ) : (
     <Container>
       <img src={productImg} />
       <Product>{productName}</Product>
       <Categories>{categoryName} </Categories>
-
       <AttributeList />
     </Container>
   );
@@ -68,30 +73,28 @@ const Container = styled.div`
   position: -webkit-sticky;
   position: sticky;
   top: 10px;
-  width: 400px;
-  /* height: 360px; */
+  width: 300px;
   text-align: left;
   padding-left: 3vh;
   margin-top: 5vh;
-  /* height: 400%; */
   img {
     width: 100%;
+    height: 320px;
     padding-bottom: 1vh;
+    object-fit: cover;
+  }
+  @media (max-width: 1200px) {
+    width: 300px;
   }
   @media (max-width: 800px) {
     position: static;
     width: 400px;
-    padding-left: 0;
-
-    padding: auto;
     margin: auto;
   }
 
   @media (max-width: 400px) {
     width: 300px;
     position: static;
-    padding-left: 0;
-    padding: auto;
     margin: auto;
   }
 `;
@@ -103,7 +106,6 @@ const Product = styled.div`
 `;
 
 const Category = styled.span`
-  /* width: 100%; */
   background-color: purple;
   color: white;
   margin-right: 3vh;
