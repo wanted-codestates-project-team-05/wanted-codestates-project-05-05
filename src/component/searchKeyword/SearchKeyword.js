@@ -10,38 +10,38 @@ import QueryString from 'qs';
 const url = 'https://static.pxl.ai/problem/data/products.json';
 
 const SearchKeyword = (props) => {
-
   const navigate = useNavigate();
-	const location = useLocation();
-	const queryData = QueryString.parse(location.search, { ignoreQueryPrefix: true });
+  const location = useLocation();
+  const queryData = QueryString.parse(location.search, { ignoreQueryPrefix: true });
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useLocalStorage('result', '');
 
-	const getData = async () => {
-		const response = await axios.get(url)
-		.then((res) => res.data.filter((product) => product.name.includes(queryData.keyword)))
-		.catch(() => {
-			alert('데이터를 불러오는데 실패하였습니다.');
-			navigate('/');
-			return;
-		})
+  const getData = async () => {
+    const response = await axios
+      .get(url)
+      .then((res) => res.data.filter((product) => product.name.includes(queryData.keyword)))
+      .catch(() => {
+        alert('데이터를 불러오는데 실패하였습니다.');
+        navigate('/');
+        return;
+      });
 
-		setData(response);
-	}
+    setData(response);
+  };
 
-	useEffect(() => {
-		if(window.localStorage.getItem(queryData.keyword)) {
-			setIsLoading(true)
-		} else {
-			getData();
-		}
-	}, [])
+  useEffect(() => {
+    if (window.localStorage.getItem(queryData.keyword)) {
+      setIsLoading(true);
+    } else {
+      getData();
+    }
+  }, []);
 
-  if (isLoading) return <Loading/>;
+  if (isLoading) return <Loading />;
   return (
     <>
-			<Header/>
-			<SearchList searchKeyword={queryData.keyword} dataList={data}/>
+      <Header />
+      <SearchList searchKeyword={queryData.keyword} dataList={data} />
     </>
   );
 };

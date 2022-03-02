@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
+import Loading from '../../common/Loading';
 
 const regionDataUrl = 'https://static.pxl.ai/problem/data/regions.json';
 
@@ -13,6 +14,8 @@ const AttributeList = () => {
   const [gender, setGender] = useState('');
   const [attributes, setAttributes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getResionData = async () => {
@@ -58,35 +61,17 @@ const AttributeList = () => {
 
           setIsLoading(false);
         })
-        .catch((err) => {});
+        .catch((err) => {
+          alert('데이터를 불러오는데 실패하였습니다.');
+          navigate('/');
+        });
     };
-    // getProductData();
-    return getResionData();
-    return;
+    getResionData();
+    return () => (setGender(null), setAttributes(null));
+    // return () => getResionData.cancel();
   }, [searchParams]);
 
-  // useEffect(() => {
-  //   const localResult = JSON.parse(window.localStorage.getItem('result'));
-  //   // const productIndex = localResult[0].name.indexOf('_');
-  //   // const product = localResult[0].name.substring(0, productIndex);
-  //   const genderIndex = localResult[0].gender.indexOf('.');
-  //   const genderCheck = localResult[0].gender.substring(genderIndex + 1, localResult[0].gender.length);
-  //   setGender(genderCheck);
-  //   const attributesList = localResult[0].attributes.map((data, i) => {
-  //     let key = Object.keys(data)[0];
-  //     return (
-  //       <div key={key} className="container">
-  //         <div className="hashtag">#{data[key].toUpperCase()}</div>
-  //         <div>{key.toUpperCase()}</div>
-  //       </div>
-  //     );
-  //   });
-
-  //   setAttributes(attributesList);
-  //   setIsLoading(false);
-  // }, [productCode]);
-
-  if (isLoading) return <div>loading</div>;
+  if (isLoading) return <Loading />;
 
   return (
     <div>

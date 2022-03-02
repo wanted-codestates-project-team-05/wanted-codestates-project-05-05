@@ -3,7 +3,8 @@ import axios from 'axios';
 import styled from 'styled-components';
 
 import AttributeList from './AttributeList';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import Loading from '../../common/Loading';
 
 const productDataUrl = 'https://static.pxl.ai/problem/data/products.json';
 
@@ -16,6 +17,8 @@ const Item = (props) => {
   const [productName, setProductName] = useState();
   const [categoryName, setCategoryName] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   // console.log(localResult[0]);
 
@@ -63,13 +66,18 @@ const Item = (props) => {
 
           setIsLoading(false);
         })
-        .catch((err) => {});
+        .catch((err) => {
+          alert('데이터를 불러오는데 실패하였습니다.');
+          navigate('/');
+        });
     };
     getProductData();
-    // return setSearchParams(null);
+    return () => setProductName(null), setProductImg(null);
+    // return () => setSearchParams(null);
+    // return () => getProductData.cancel();
   }, [searchParams]);
 
-  if (isLoading) return <div>loading</div>;
+  if (isLoading) return <Loading />;
 
   return (
     <Container>
@@ -85,7 +93,7 @@ const Item = (props) => {
 const Container = styled.div`
   position: -webkit-sticky;
   position: sticky;
-  top: 0;
+  top: 10px;
   width: 400px;
   /* height: 360px; */
   text-align: left;

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Item from '../../common/Item';
+import Loading from '../../common/Loading';
 import { MoreButton } from '../../searchKeyword/MoreButton';
 
 const productDataUrl = 'https://static.pxl.ai/problem/data/products.json';
@@ -15,6 +16,8 @@ const CardContainer = (props) => {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [cardNum, setCardNum] = useState(30);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getProductData = async () => {
@@ -35,13 +38,17 @@ const CardContainer = (props) => {
           }
           setIsLoading(false);
         })
-        .catch((err) => {});
+        .catch((err) => {
+          alert('데이터를 불러오는데 실패하였습니다.');
+          navigate('/');
+        });
     };
-    // getProductData();
-    return getProductData();
+    getProductData();
+    return () => setProducts(null);
+    // return () => getProductData.cancel();
   }, [searchParams]);
 
-  if (isLoading) return <div>Loading</div>;
+  if (isLoading) return <Loading />;
 
   return (
     <Container>
