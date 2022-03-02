@@ -15,7 +15,7 @@ const Home = () => {
   const [isError, setIsError] = useState(false);
   const requestOptions = {
     method: 'GET',
-    redirect: 'follow',
+    redirect: 'follow'
   };
   useEffect(() => {
     if (regions.length === 0) {
@@ -103,14 +103,14 @@ const Home = () => {
       ) : (
         <Main>
           {isError ? (
-            <Sign>
+            <ErrorNotice>
               <h1>No results found...</h1>
               <Des>
                 <li>product 코드 검색: 숫자만 입력(ex: 1)</li>
                 <li>url 검색: url 입력(ex: https://static.pxl.ai/problem/images/VT-070.jpg)</li>
                 <li>키워드 검색 : 키워드 입력 (ex: 원피스)</li>
               </Des>
-            </Sign>
+            </ErrorNotice>
           ) : (
             <Sign>
               <h1>Artificial Intelligence</h1>
@@ -216,6 +216,18 @@ const Des = styled.ul`
   font-size: 1.5rem;
   color: grey;
   list-style: square;
+  @media screen and (max-width: 500px) {
+    font-size: 1rem;
+  }
+`;
+
+const ErrorNotice = styled.div`
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  @media screen and (max-width: 500px) {
+    font-size: 1.5rem;
+  }
 `;
 
 export default Home;
