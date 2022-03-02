@@ -25,7 +25,7 @@ const Container = styled.div`
   width: 9.375rem;
   height: 3.125rem;
   margin: 0 auto;
-  background-color: ${(props) => (props.loading ? 'lightblue' : 'lightgray')};
+  background-color: ${(props) => (props.loading === 'true' ? 'lightblue' : 'lightgray')};
   border-radius: 5px;
   display: flex;
   justify-content: center;
