@@ -15,20 +15,20 @@ const Home = () => {
   const [isError, setIsError] = useState(false);
   const requestOptions = {
     method: 'GET',
-    redirect: 'follow'
+    redirect: 'follow',
   };
   useEffect(() => {
     if (regions.length === 0) {
       fetch(`https://static.pxl.ai/problem/data/regions.json`, requestOptions)
-        .then(response => response.json())
-        .then(response => setRegions(response))
-        .catch(error => console.log(error, '네트워크 요청 에러'));
+        .then((response) => response.json())
+        .then((response) => setRegions(response))
+        .catch((error) => console.log(error, '네트워크 요청 에러'));
     }
     if (products.length === 0) {
       fetch(`https://static.pxl.ai/problem/data/products.json`, requestOptions)
-        .then(response => response.json())
-        .then(response => setProducts(response))
-        .catch(error => console.log(error, '네트워크 요청 에러'));
+        .then((response) => response.json())
+        .then((response) => setProducts(response))
+        .catch((error) => console.log(error, '네트워크 요청 에러'));
     }
   }, [products.length, regions.length, setProducts, setRegions]);
   const getData = async (value, searchType) => {
@@ -69,7 +69,8 @@ const Home = () => {
   };
   const matchingSearchType = async (value) => {
     const productCodeCheck = /^[0-9]*$/;
-    const imageUrlCheck = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?(.*?)\.(jpg|jpeg|png|gif|bmp|pdf)$/;
+    const imageUrlCheck =
+      /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?(.*?)\.(jpg|jpeg|png|gif|bmp|pdf)$/;
     setIsLoading(true);
     try {
       if (productCodeCheck.test(value)) {
@@ -148,15 +149,29 @@ const Sign = styled.div`
   height: 30vh;
   font-size: 3rem;
   color: #4b4b4b;
+
   & > :nth-child(1) {
     font-weight: bold;
     color: #4b4b4b;
+    font-size: 2rem;
   }
   & > :nth-child(2) {
     color: #878787;
+    font-size: 2rem;
     > span {
       font-weight: bold;
       color: #4b4b4b;
+    }
+  }
+
+  @media screen and (max-width: 500px) {
+    height: 15vh;
+    & > :nth-child(1) {
+      font-size: 1.7rem;
+      & > :nth-child(2) {
+        color: #878787;
+        font-size: 1.7rem;
+      }
     }
   }
 `;
@@ -180,7 +195,7 @@ const Input = styled.input`
     width: 28rem;
   }
   @media screen and (max-width: 500px) {
-    width: 17rem;
+    width: 20rem;
   }
 `;
 const Btn = styled.button`
@@ -192,6 +207,9 @@ const Btn = styled.button`
   font-weight: 600;
   cursor: pointer;
   color: #4b4b4b;
+  @media screen and (max-width: 500px) {
+    display: none;
+  }
 `;
 
 const Des = styled.ul`
