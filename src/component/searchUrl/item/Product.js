@@ -73,8 +73,6 @@ const Item = (props) => {
     };
     getProductData();
     return () => setProductName(null), setProductImg(null);
-    // return () => setSearchParams(null);
-    // return () => getProductData.cancel();
   }, [searchParams]);
 
   if (isLoading) return <Loading />;
@@ -94,30 +92,28 @@ const Container = styled.div`
   position: -webkit-sticky;
   position: sticky;
   top: 10px;
-  width: 400px;
-  /* height: 360px; */
+  width: 300px;
   text-align: left;
   padding-left: 3vh;
   margin-top: 5vh;
-  /* height: 400%; */
   img {
     width: 100%;
+    height: 320px;
     padding-bottom: 1vh;
+    object-fit: cover;
+  }
+  @media (max-width: 1200px) {
+    width: 300px;
   }
   @media (max-width: 800px) {
     position: static;
     width: 400px;
-    padding-left: 0;
-
-    padding: auto;
     margin: auto;
   }
 
   @media (max-width: 400px) {
     width: 300px;
     position: static;
-    padding-left: 0;
-    padding: auto;
     margin: auto;
   }
 `;
@@ -129,7 +125,6 @@ const Product = styled.div`
 `;
 
 const Category = styled.span`
-  /* width: 100%; */
   background-color: purple;
   color: white;
   margin-right: 3vh;

@@ -6,17 +6,12 @@ import styled from 'styled-components';
 import { StickyContainer } from 'react-sticky';
 
 const SearchUrl = (props) => {
-  // const params = props.match.params.product_code;
-  // console.log(params);
-
   return (
     <div>
       <Header />
       <Contents>
         <StickyContainer>
-          <Test>
-            <Product />
-          </Test>
+          <Product />
         </StickyContainer>
         <CardContainer />
       </Contents>
@@ -30,10 +25,6 @@ const Contents = styled.div`
   @media (max-width: 800px) {
     display: block;
   }
-`;
-
-const Test = styled.div`
-  height: 400%;
 `;
 
 export default SearchUrl;
