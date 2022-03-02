@@ -27,6 +27,7 @@ const Home = () => {
       return result;
     } else if (type === 'imageUrl') {
       result = regions.filter((product) => product.image_url === value);
+
       setResult(result);
       return result;
     } else if (type === 'keyword') {
@@ -57,7 +58,8 @@ const Home = () => {
   };
   const matchingSearchType = async (value) => {
     const productCodeCheck = /^[0-9]*$/;
-    const imageUrlCheck = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?(.*?)\.(jpg|jpeg|png|gif|bmp|pdf)$/;
+    const imageUrlCheck =
+      /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?(.*?)\.(jpg|jpeg|png|gif|bmp|pdf)$/;
     if (productCodeCheck.test(value)) {
       const result = filterResult('productCode', value);
       goSearchUrl(result, value, 'productCode');

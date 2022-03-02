@@ -1,20 +1,23 @@
 import styled from 'styled-components';
 import QueryString from 'qs';
-import { useLocation } from 'react-router';
-import TextHighlight from './TextHighlight'
+import { useLocation, useNavigate } from 'react-router';
+import TextHighlight from './TextHighlight';
 
-const Item = ( props ) => {
-  const { image_url, name, price } = props;
+const Item = (props) => {
+  const { image_url, name, price, product_code } = props;
   const location = useLocation();
   const queryData = QueryString.parse(location.search, { ignoreQueryPrefix: true });
   const keyWord = queryData.keyword;
+  const navigate = useNavigate();
 
-  
-  const onClickItem = () => { 
+  const onClickItem = () => {
+    if (product_code) {
+      return navigate(`?productCode=${product_code}`);
+    }
     window.open(`${image_url}`, '_blank');
-  }
+  };
 
-  //console.log(keyWord);
+  // console.log(keyWord);
   return (
     <Container onClick={onClickItem}>
       <img src={image_url} alt={name + '이미지'} className="prod-img" />

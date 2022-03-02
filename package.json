@@ -13,6 +13,7 @@
     "react-loader-spinner": "^6.0.0-0",
     "react-router-dom": "^6.2.1",
     "react-scripts": "5.0.0",
+    "react-sticky": "^6.0.3",
     "styled-components": "^5.3.3",
     "use-url-search-params": "^2.5.1",
     "web-vitals": "^2.1.4"
