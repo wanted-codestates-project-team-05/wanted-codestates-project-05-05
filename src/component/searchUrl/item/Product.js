@@ -8,6 +8,7 @@ import useLocalStorage from '../../../hooks/useLocalStorage';
 const Item = (props) => {
   let [searchParams, setSearchParams] = useSearchParams();
   let productCode = searchParams.get('productCode');
+  let imgCode = searchParams.get('imageUrl');
   const [productImg, setProductImg] = useState();
   const [productName, setProductName] = useState();
   const [categoryName, setCategoryName] = useState([]);
@@ -17,48 +18,56 @@ const Item = (props) => {
 
   useEffect(() => {
     setIsLoading(true);
-    if (productCode) {
-      const productIndex = allProducts[productCode - 1].name.indexOf('_');
-      const product = allProducts[productCode - 1].name.substring(0, productIndex);
-      setProductName(product);
-
-      const productImg = allProducts[productCode - 1].image_url;
-      setProductImg(productImg);
-
-      const categories = allProducts[productCode - 1].category_names.map((category) => {
-        if (category === '') return;
-        const categoryIndex = category.indexOf('.');
-        const categoryName = category.substring(categoryIndex + 1, category.length).toUpperCase();
-        return <Category key={category}>{categoryName}</Category>;
-      });
-      setCategoryName(categories);
-    } else {
-      const product = result[0].gender;
-      //fix : gender -> name
-      setProductName(product);
-
-      const productImg = result[0].image_url;
-      setProductImg(productImg);
-
-      const categories = result[0].category_names.map((category) => {
-        if (category === '') return;
-        const categoryIndex = category.indexOf('.');
-        const categoryName = category.substring(categoryIndex + 1, category.length).toUpperCase();
-        return <Category key={category}>{categoryName}</Category>;
-      });
-      setCategoryName(categories);
+    try {
+      if (productCode) {
+        console.log(productCode);
+        const productIndex = allProducts[productCode - 1].name.indexOf('_');
+        const product = allProducts[productCode - 1].name.substring(0, productIndex);
+        setProductName(product);
+        const productImg = allProducts[productCode - 1].image_url;
+        setProductImg(productImg);
+        console.log(allProducts[productCode - 1].category_names);
+        console.log(productCode);
+        const categories = allProducts[productCode - 1].category_names.map((category) => {
+          if (category === '') return;
+          const categoryIndex = category.indexOf('.');
+          const categoryName = category.substring(categoryIndex + 1, category.length).toUpperCase();
+          return <Category key={category}>{categoryName}</Category>;
+        });
+        setCategoryName(categories);
+      } else {
+        const productCode = result[0].product_code;
+        const productIndex = allProducts[productCode - 1].name.indexOf('_');
+        const product = allProducts[productCode - 1].name.substring(0, productIndex);
+        setProductName(product);
+        const productImg = result[0].image_url;
+        setProductImg(productImg);
+        const categories = result[0].category_names.map((category) => {
+          if (category === '') return;
+          const categoryIndex = category.indexOf('.');
+          const categoryName = category.substring(categoryIndex + 1, category.length).toUpperCase();
+          return <Category key={category}>{categoryName}</Category>;
+        });
+        setCategoryName(categories);
+        console.log(categories);
+      }
+    } catch (err) {
+      console.log(err);
     }
+
     setIsLoading(false);
+    return () => setResult(null);
   }, [searchParams]);
 
   if (isLoading) return <Loading />;
 
-  return (
+  return isLoading ? (
+    <Loading />
+  ) : (
     <Container>
       <img src={productImg} />
       <Product>{productName}</Product>
       <Categories>{categoryName} </Categories>
-
       <AttributeList />
     </Container>
   );

@@ -15,47 +15,54 @@ const AttributeList = () => {
   const [result, setResult] = useLocalStorage('result');
   useEffect(() => {
     setIsLoading(true);
-    if (productCode) {
-      const genderIndex = allRegions[productCode - 1].gender.indexOf('.');
-      const genderCheck = allRegions[productCode - 1].gender.substring(
-        genderIndex + 1,
-        allRegions[productCode - 1].gender.length
-      );
-      setGender(genderCheck);
-
-      const attributesList = allRegions[productCode - 1].attributes.map((data, i) => {
-        let key = Object.keys(data)[0];
-        return (
-          <div key={key} className="container">
-            <div className="hashtag">#{data[key].toUpperCase()}</div>
-            <div>{key.toUpperCase()}</div>
-          </div>
+    try {
+      if (productCode) {
+        const genderIndex = allRegions[productCode - 1].gender.indexOf('.');
+        const genderCheck = allRegions[productCode - 1].gender.substring(
+          genderIndex + 1,
+          allRegions[productCode - 1].gender.length
         );
-      });
-      setAttributes(attributesList);
-    } else {
-      const genderIndex = result[0].gender.indexOf('.');
-      const genderCheck = result[0].gender.substring(genderIndex + 1, result[0].gender.length);
-      setGender(genderCheck);
+        setGender(genderCheck);
 
-      const attributesList = result[0].attributes.map((data, i) => {
-        let key = Object.keys(data)[0];
-        return (
-          <div key={key} className="container">
-            <div className="hashtag">#{data[key].toUpperCase()}</div>
-            <div>{key.toUpperCase()}</div>
-          </div>
-        );
-      });
-      setAttributes(attributesList);
+        const attributesList = allRegions[productCode - 1].attributes.map((data, i) => {
+          let key = Object.keys(data)[0];
+          return (
+            <div key={key} className="container">
+              <div className="hashtag">#{data[key].toUpperCase()}</div>
+              <div>{key.toUpperCase()}</div>
+            </div>
+          );
+        });
+        setAttributes(attributesList);
+      } else {
+        const genderIndex = result[0].gender.indexOf('.');
+        const genderCheck = result[0].gender.substring(genderIndex + 1, result[0].gender.length);
+        setGender(genderCheck);
+
+        const attributesList = result[0].attributes.map((data, i) => {
+          let key = Object.keys(data)[0];
+          return (
+            <div key={key} className="container">
+              <div className="hashtag">#{data[key].toUpperCase()}</div>
+              <div>{key.toUpperCase()}</div>
+            </div>
+          );
+        });
+        setAttributes(attributesList);
+      }
+    } catch (err) {
+      console.log(err);
     }
+
     setIsLoading(false);
     return () => (setGender(null), setAttributes(null));
   }, [searchParams]);
 
   if (isLoading) return <Loading />;
 
-  return (
+  return isLoading ? (
+    <Loading />
+  ) : (
     <div>
       <Title>ATTRIBUTES</Title>
       <Attribute>
