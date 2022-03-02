@@ -20,7 +20,8 @@ const CardContainer = (props) => {
 
   useEffect(() => {
     setIsLoading(true);
-    // try {
+
+    try {
       if (productCode) {
         const productIndex = allProducts[productCode - 1].name.indexOf('_');
         const productName = allProducts[productCode - 1].name.substring(0, productIndex);
@@ -31,18 +32,17 @@ const CardContainer = (props) => {
         const productName = findProduct[0].name.substring(0, productIndex);
         setProducts(allProducts.filter((product) => product.name.includes(productName)));
       }
-    // }
-    // catch (err) {
-    //   console.log(err, '데이터를 불러오는데 실패하였습니다.');
-    //   navigate('/');
-    // }
+    } catch (err) {
+      console.log(err, '데이터를 불러오는데 실패하였습니다.');
+    }
+
     setIsLoading(false);
     return () => setProducts(null);
   }, [searchParams]);
 
-  if (isLoading) return <Loading />;
-
-  return (
+  return isLoading ? (
+    <Loading />
+  ) : (
     <Container>
       <Card className="container">
         {products

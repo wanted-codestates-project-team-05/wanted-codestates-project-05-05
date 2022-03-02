@@ -15,7 +15,7 @@ const Home = () => {
   const [isError, setIsError] = useState(false);
   const requestOptions = {
     method: 'GET',
-    redirect: 'follow'
+    redirect: 'follow',
   };
   useEffect(() => {
     if (regions.length === 0) {
